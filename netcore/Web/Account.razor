@@ -1,0 +1,423 @@
+﻿@page "/"
+
+@inject IJSRuntime JsRuntime;
+@inject SessionState state
+
+@using AdminTool2.Data
+@using Microsoft.EntityFrameworkCore;
+@using LoreSoft.Blazor.Controls;
+@using static AdminTool2.Data.Redis;
+
+<!-- Modal -->
+<div class="modal fade" id="BasicModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @ModalMessage
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<table class="table table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">FirebaseID</th>
+      <th scope="col">GameUID</th>
+      <th scope="col">WorldName</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="width:40em">
+        <Typeahead SearchMethod="@SearchFirebaseUIDs"
+                   @bind-Value="@plaformAccount"
+                   Placeholder="FirebaseUID">
+          <SelectedTemplate Context="plaformAccount">
+            @plaformAccount.firebaseUID
+          </SelectedTemplate>
+          <ResultTemplate Context="plaformAccount">
+            @plaformAccount.firebaseUID
+          </ResultTemplate>
+        </Typeahead>
+        <button class="btn btn-primary float-right" @onclick="LoadFirebaseID"><i class="fas fa-download mr-1"></i>Load</button>
+        <button class="btn btn-danger float-left" @onclick="Reset"><i class="fas fa-trash-restore mr-1"></i>Reset</button>
+      </td>
+      <td>
+        <input type="number" class="form-control" @bind="account.gameUID" />
+        <button class="btn btn-primary float-right" @onclick="@(e=>Load(account.gameUID))"><i class="fas fa-download mr-1"></i>Load</button>
+      </td>
+      <td style="width:30em">
+        <Typeahead SearchMethod="@SearchWorldNames"
+                   @bind-Value="@account"
+                   Placeholder="WorldName">
+          <SelectedTemplate Context="account">
+            @account.worldName
+          </SelectedTemplate>
+          <ResultTemplate Context="account">
+            @account.worldName
+          </ResultTemplate>
+        </Typeahead>
+        <button class="btn btn-primary float-right" @onclick="LoadWorldName"><i class="fas fa-download mr-1"></i>Load</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="table table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">FirebaseID</th>
+      <th scope="col">GameUID</th>
+      <th scope="col">WorldName</th>
+      <th scope="col">ProfileID</th>
+      <th scope="col">Level</th>
+      <th scope="col">RewardedLevel</th>
+      <th scope="col">Heart</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="text" class="form-control" @bind="plaformAccount.firebaseUID" readonly /></td>
+      <td><input type="number" class="form-control" @bind="account.gameUID" readonly /></td>
+      <td><input type="text" class="form-control" @bind="account.worldName" readonly /></td>
+      <td><input type="number" class="form-control" @bind="account.profileID" /></td>
+      <td><input type="number" class="form-control" @bind="account.level" /></td>
+      <td><input type="number" class="form-control" @bind="account.rewardedLevel" /></td>
+      <td><input type="number" class="form-control" @bind="account.heart" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Exp</th>
+      <th scope="col">Life</th>
+      <th scope="col">AO</th>
+      <th scope="col">Coral</th>
+      <th scope="col">Seaweed</th>
+      <th scope="col">ChargeCash</th>
+      <th scope="col">EventCash</th>
+      <th scope="col">StorageLevel</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="number" class="form-control" @bind="account.exp" /></td>
+      <td><input type="number" class="form-control" @bind="account.life" /></td>
+      <td><input type="number" class="form-control" @bind="account.ao" /></td>
+      <td><input type="number" class="form-control" @bind="account.coral" /></td>
+      <td><input type="number" class="form-control" @bind="account.seaweed" /></td>
+      <td><input type="number" class="form-control" @bind="account.chargeCash" /></td>
+      <td><input type="number" class="form-control" @bind="account.eventCash" /></td>
+      <td><input type="number" class="form-control" @bind="account.storageLevel" /></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<table class="table table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">ShareFishID</th>
+      <th scope="col">SocialPoint</th>
+      <th scope="col">RegistTime</th>
+      <th scope="col">LastUpdateTime</th>
+      <th scope="col">HeartBeat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="number" class="form-control" @bind="account.shareFishID" /></td>
+      <td><input type="number" class="form-control" @bind="account.socialPoint" /></td>
+      <td><input type="text" class="form-control" @bind="account.registTime" @bind:format="yyyy-MM-dd HH:mm:ss" /></td>
+      <td><input type="text" class="form-control" @bind="account.lastUpdateTime" @bind:format="yyyy-MM-dd HH:mm:ss" /></td>
+      <td><input type="text" class="form-control" @bind="account.HeartBeat" @bind:format="yyyy-MM-dd HH:mm:ss" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="form-group">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <button class="btn btn-primary float-right ml-1" @onclick="Save"><i class="fas fa-upload mr-1"></i>Save</button>
+          @if (UserLock == true)
+          {
+            <button class="btn btn-success float-right ml-1" @onclick="NonMaintenance"><i class="fas fa-wrench mr-1"></i>Non Maintenance</button>
+
+          }
+          else
+          {
+            <button class="btn btn-danger float-right ml-1" @onclick="Maintenance"><i class="fas fa-wrench mr-1"></i>Maintenance</button>
+          }
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+@code {
+
+  string ModalMessage = string.Empty;
+  AdminTool2.Data.Entities.Account account = new AdminTool2.Data.Entities.Account();
+  public AdminTool2.Data.Entities.PlaformAccount plaformAccount = new AdminTool2.Data.Entities.PlaformAccount();
+  bool UserLock = false;
+
+  Redis Redis = new Redis();
+
+  protected override async Task OnInitializedAsync()
+  {
+    if (state.GameUID != 0)
+    {
+      var gameUID = state.GameUID;
+      using (var accountContext = new AccountContext())
+      {
+        var foundAccount = await accountContext.Accounts
+          .AsNoTracking()
+          .FirstOrDefaultAsync(u => u.gameUID == gameUID);
+        if (foundAccount != null)
+        {
+          account = foundAccount;
+        }
+      }
+      UserLock = Redis.IsLockUser(gameUID);
+    }
+  }
+
+
+  protected async Task ShowModal()
+  {
+    await JsRuntime.InvokeAsync<bool>("ShowModalById", "#BasicModal");
+  }
+
+  async Task Load(long gameUID)
+  {
+    using (var accountContext = new AccountContext())
+    {
+      var foundAccount = await accountContext.Accounts
+        .AsNoTracking()
+        .FirstOrDefaultAsync(u => u.gameUID == gameUID);
+      if (foundAccount == null)
+      {
+        ModalMessage = "게임 테이블에서 계정을 찾을 수 없습니다.";
+        await ShowModal();
+
+      }
+      else
+      {
+        account = foundAccount;
+
+        state.GameUID = account.gameUID;
+
+        account.HeartBeat = Redis.GetHeartBeat(gameUID);
+
+        if (!Redis.ReverseSyncBuilding(gameUID)) {
+          ModalMessage = string.Format($"건물 동기화에 실패 하였습니다");
+        } else {
+          ModalMessage = string.Format($"계정을 찾았습니다.");
+        }
+        await ShowModal();
+      }
+    }
+
+    using (var plaformContext = new PlaformContext())
+    {
+      var account = await plaformContext.Accounts
+        .AsNoTracking()
+        .FirstOrDefaultAsync(u => u.gameUID == gameUID);
+      if (account != null)
+      {
+        plaformAccount = account;
+      }
+    }
+  }
+
+  async Task Reset()
+  {
+    if (plaformAccount.firebaseUID.Length > 0)
+    {
+      using (var plaformContext = new PlaformContext())
+      {
+        var foundPlaform = await plaformContext.Accounts
+                              .AsNoTracking()
+                              .FirstOrDefaultAsync(u => u.gameUID == account.gameUID);
+        if (foundPlaform != null)
+        {
+
+          plaformContext.Accounts.Remove(foundPlaform);
+          plaformContext.SaveChanges();
+
+          ModalMessage = string.Format($"삭제 성공");
+          await ShowModal();
+
+          plaformAccount = new AdminTool2.Data.Entities.PlaformAccount();
+
+        }
+        else
+        {
+          ModalMessage = string.Format($"삭제 실패");
+          await ShowModal();
+        }
+      }
+    }
+  }
+
+  async Task Save()
+  {
+    using (var accountContext = new AccountContext())
+    {
+      accountContext.Update(account);
+      await accountContext.SaveChangesAsync();
+
+      ModalMessage = string.Format($"저장 성공");
+      await ShowModal();
+    }
+  }
+
+  async Task LoadFirebaseID()
+  {
+    using (var plaformContext = new PlaformContext())
+    {
+      var account = await plaformContext.Accounts
+        .AsNoTracking()
+        .FirstOrDefaultAsync(u => u.firebaseUID.CompareTo(plaformAccount.firebaseUID) == 0);
+      if (account != null)
+      {
+        plaformAccount = account;
+      }
+    }
+
+    await Load(plaformAccount.gameUID);
+  }
+
+
+  public Task<IEnumerable<AdminTool2.Data.Entities.PlaformAccount>> SearchFirebaseUIDs(string searchText)
+  {
+    using (var plaformContext = new PlaformContext())
+    {
+      var plaform = plaformContext.Accounts
+        .AsNoTracking()
+        .Where(u => u.firebaseUID.StartsWith(searchText, System.StringComparison.CurrentCultureIgnoreCase) == true).ToList();
+
+      return Task.FromResult<IEnumerable<AdminTool2.Data.Entities.PlaformAccount>>(plaform);
+    }
+  }
+
+  async Task LoadWorldName()
+  {
+    string worldName = account.worldName;
+    long gameUID = 0;
+
+    using (var accountContext = new AccountContext())
+    {
+      var foundAccount = await accountContext.Accounts
+        .AsNoTracking()
+        .FirstOrDefaultAsync(u => u.worldName.CompareTo(worldName) == 0);
+      if (foundAccount == null)
+      {
+        ModalMessage = "게임 테이블에서 계정을 찾을 수 없습니다.";
+        await ShowModal();
+
+      }
+      else
+      {
+
+        account = foundAccount;
+
+        state.GameUID = account.gameUID;
+        gameUID = account.gameUID;
+
+        account.HeartBeat = Redis.GetHeartBeat(gameUID);
+        if (!Redis.ReverseSyncBuilding(gameUID)) {
+          ModalMessage = string.Format($"건물 동기화에 실패 하였습니다");
+        } else {
+          ModalMessage = string.Format($"계정을 찾았습니다.");
+        }
+        await ShowModal();
+
+      }
+    }
+
+    if (gameUID > 0)
+    {
+      using (var plaformContext = new PlaformContext())
+      {
+        var account = await plaformContext.Accounts
+          .AsNoTracking()
+          .FirstOrDefaultAsync(u => u.gameUID == gameUID);
+        if (account != null)
+        {
+          plaformAccount = account;
+        }
+      }
+    }
+  }
+
+  public Task<IEnumerable<AdminTool2.Data.Entities.Account>> SearchWorldNames(string searchText)
+  {
+    using (var accountContext = new AccountContext())
+    {
+      var WorldNames = accountContext.Accounts
+        .AsNoTracking()
+        .Where(u => u.worldName.StartsWith(searchText, System.StringComparison.CurrentCultureIgnoreCase) == true).ToList();
+
+
+      return Task.FromResult<IEnumerable<AdminTool2.Data.Entities.Account>>(WorldNames);
+    }
+  }
+
+  async Task Maintenance(){
+    if (state.GameUID != 0)
+    {
+      if (Redis.Maintenance(state.GameUID)) {
+        ModalMessage = string.Format($"설정 완료");
+        await ShowModal();
+
+        UserLock = true;
+      } else {
+        ModalMessage = string.Format($"설정할 수 없습니다.");
+        await ShowModal();
+      }
+
+
+    }
+
+  }
+
+  async Task NonMaintenance(){
+    if (state.GameUID != 0)
+    {
+      Redis.NonMaintenance(state.GameUID);
+
+      ModalMessage = string.Format($"설정 완료");
+      await ShowModal();
+
+      UserLock = false;
+    }
+  }
+
+}
