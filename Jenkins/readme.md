@@ -4,15 +4,15 @@ windows script
 SET "BUILD_TYPE=Internal"
 SET "DOCKER_NAME=internal"
 SET "RUN_PORT=15500"
-SET DESIGN_SVN=https://172.20.103.4:8443/svn/Abyssworld/Design/trunk/Main/000_DataTable/%BUILD_TYPE%
+SET DESIGN_SVN=https://172.20.103.4:8443/svn/*/Design/trunk/Main/000_DataTable/%BUILD_TYPE%
 SET DESIGN_DIR=D:\GameData\DesignData\%BUILD_TYPE%
 
-SET META_SVN=https://172.20.103.4:8443/svn/Abyssworld/Server/Meta/%BUILD_TYPE%
+SET META_SVN=https://172.20.103.4:8443/svn/*/Server/Meta/%BUILD_TYPE%
 SET META_DIR=D:\GameData\Meta\%BUILD_TYPE%
 
 SET MAKER_DIR=D:\GameData\Maker\%BUILD_TYPE%
 
-SET ASSET_SVN=https://172.20.103.4:8443/svn/Abyssworld/Client/trunk/Abyssworld_Framework/AssetBundles
+SET ASSET_SVN=https://172.20.103.4:8443/svn/*/Client/trunk/*_Framework/AssetBundles
 SET ASSET_DIR=D:\ClientAssets\%BUILD_TYPE%
 
 SVN %DESIGN_DIR% %DESIGN_SVN% checkOut
@@ -74,7 +74,7 @@ XCOPY %META_DIR%\json\*.json %WORKSPACE%\server\AdminTool\table /s /y
 XCOPY %META_DIR%\json\*.json %WORKSPACE%\server\XTest\XTest\table /s /y
 
 cd %WORKSPACE%
-dotnet clean Abyssworld.sln
-dotnet build -c Release Abyssworld.sln
+dotnet clean *.sln
+dotnet build -c Release *.sln
 dotnet publish server/AppServer/AppServer.csproj -o %WORKSPACE%\publish\running  -c Release
 ```
