@@ -6,4 +6,4 @@
 
 #### [Golang 기반 오픈 소스 소켓 서버](https://github.com/fatherscott/huchat)
 
-#### [스트립트 레벨을 볼 수 있는 링크입니다](https://github.com/ini64/DevServer)
+#### [간단한 개발 서버 스크립트 링크](https://github.com/ini64/DevServer)
