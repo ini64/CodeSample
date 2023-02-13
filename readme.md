@@ -1,7 +1,9 @@
-### 코드 스타일을 볼 수 있는 샘플입니다.
+### 코드 스타일을 볼 수 있는 보기입니다.
 
-### 아래는 개인 작업 후 오픈한 서버들 입니다.
+### 아래는 개인 작업 후 오픈한 서버들입니다
 
-#### [C# 기반 오픈소스 소켓 서버](https://github.com/fatherscott/GoodTiger)
+#### [C# 기반 오픈 소스 소켓 서버](https://github.com/fatherscott/GoodTiger)
 
-#### [Golang 기반 오픈소스 소켓 서버](https://github.com/fatherscott/huchat)
+#### [Golang 기반 오픈 소스 소켓 서버](https://github.com/fatherscott/huchat)
+
+#### [스트립트 레벨을 볼 수 있는 링크입니다](https://github.com/ini64/DevServer)
