@@ -10,4 +10,4 @@
 
 ## 요즘 작업 중인 프로젝트입니다.
 
-#### [flutter & golang 메신져](https://github.com/fatherscott/niko)
+#### [flutter & golang 메신저](https://github.com/fatherscott/niko)
