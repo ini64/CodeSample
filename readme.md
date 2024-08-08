@@ -1,4 +1,4 @@
-너님 코딩 스타일을 알고 싶음.
+코딩 스타일.
 -------------
 https://github.com/ini64/CodeSample
 
@@ -18,6 +18,6 @@ JoTiger https://github.com/fatherscott/jotiger
 -------------
 Niko https://github.com/fatherscott/niko
 
-급 할때는 이런게 짱이죠
+개발 스크립트
 -------------
 간단한 개발 서버 스크립트 링크 https://github.com/ini64/DevServer
